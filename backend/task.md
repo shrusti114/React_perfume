@@ -1,0 +1,19 @@
+- [ ] **1. Schema Refactor for Custom String IDs**
+  - [ ] Implement `Counter.js` collection and `generateId` utility for sequential IDs (`U001`, `S001`).
+  - [ ] Rewrite `User.js`, `Product.js`, `Order.js`, `Cart.js` schemas to `_id: String` and string refs.
+  - [ ] Create `Category.js` and `Report.js` models with sequential `C001`, `R001` IDs.
+- [x] **2. Auth & User Profile Backend**
+  - [x] Update `authController.js` logic to block `isVerified === false` and assign `U00...` IDs.
+  - [x] Build `userController.js` for `PUT /api/users/profile` and mount it.
+- [x] **3. Seeding Re-initialization**
+  - [x] Drop the existing database to clear out `ObjectId` collisions.
+  - [x] Script `seed.js` to insert `shrusti@gmail.com` as `U001` and `tanya@gmail.com` as `S001`.
+- [x] **4. React Frontend Updates**
+  - [x] Refactor User Dashboard into "Profile Management" form interacting with PUT API.
+  - [x] Construct Admin Dashboard using the Total Black (`#000000`) and Light Pink (`#FFD1DC`) theme, handling verifications and viewing Seller Details/Total Product.
+- [x] **5. Recharts Analytics**
+  - [x] Inject comprehensive line, bar, and pie charts into Admin Dashboard mapping requested variables.
+- [x] **6. Mass Data Mocking**
+  - [x] Seed precisely 5 fully documented records mapped to Custom String IDs across Users, Categories, Products, Reports, Carts, and Orders.
+- [x] **7. Global Rebranding**
+  - [x] Execute site-wide string replacement transforming "Veloura" to "Westion".
