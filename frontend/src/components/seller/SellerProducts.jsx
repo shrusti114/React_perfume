@@ -116,7 +116,7 @@ const SellerProducts = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 sm:p-12">
           <div className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" onClick={() => setShowModal(false)}></div>
           <div className="relative bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="px-10 py-8 bg-[#fafafa] border-b border-neutral-100 flex justify-between items-center">
+            <div className="px-10 py-8 bg-neutral-50 dark:bg-black border-b border-neutral-100 flex justify-between items-center">
               <h3 className="text-3xl font-elegant text-neutral-800">{editingProduct ? 'Edit Essence' : 'New Creation'}</h3>
               <button onClick={() => setShowModal(false)} className="text-neutral-400 hover:text-black transition-colors">
                 <X size={24} />

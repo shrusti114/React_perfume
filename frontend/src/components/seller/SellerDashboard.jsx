@@ -35,12 +35,12 @@ const SellerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex font-sans selection:bg-[#FFD1DC]">
+    <div className="min-h-screen bg-neutral-50 dark:bg-black flex font-sans selection:bg-[#FFD1DC] dark:bg-[#f8c8dc]">
       {/* Sidebar */}
-      <aside className="w-80 bg-white border-r border-[#000000]/5 flex flex-col sticky top-0 h-screen shadow-sm z-30">
-        <div className="p-10 border-b border-[#000000]/5">
+      <aside className="w-80 bg-white border-r border-black/5 dark:border-white/10 flex flex-col sticky top-0 h-screen shadow-sm z-30">
+        <div className="p-10 border-b border-black/5 dark:border-white/10">
           <div className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-[#FFD1DC]">
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-[#FFD1DC] dark:text-[#f8c8dc]">
               <Package size={20} />
             </div>
             <h1 className="text-2xl font-cursive font-bold text-black tracking-tight">Westion</h1>
@@ -51,7 +51,7 @@ const SellerDashboard = () => {
               <UserIcon size={20} />
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#000000]/40">Boutique Owner</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-black dark:text-white/40">Boutique Owner</p>
               <p className="text-lg font-elegant text-black truncate">{userName}</p>
             </div>
           </div>
@@ -68,7 +68,7 @@ const SellerDashboard = () => {
                 : 'text-neutral-500 hover:bg-neutral-50 hover:text-black'
               }`}
             >
-              <span className={`transition-colors ${activeTab === item.id ? 'text-[#FFD1DC]' : 'group-hover:text-pink-400'}`}>
+              <span className={`transition-colors ${activeTab === item.id ? 'text-[#FFD1DC] dark:text-[#f8c8dc]' : 'group-hover:text-pink-400'}`}>
                 {item.icon}
               </span>
               <span className="text-sm font-bold uppercase tracking-widest">{item.label}</span>
@@ -76,7 +76,7 @@ const SellerDashboard = () => {
           ))}
         </nav>
 
-        <div className="p-6 border-t border-[#000000]/5 space-y-3">
+        <div className="p-6 border-t border-black/5 dark:border-white/10 space-y-3">
           <button onClick={() => navigate('/')} className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-neutral-500 hover:bg-neutral-50 hover:text-black transition-all">
             <ArrowLeft size={20} />
             <span className="text-sm font-bold uppercase tracking-widest">Back to Store</span>

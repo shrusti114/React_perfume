@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User as UserIcon, Eye, EyeOff, Sparkles, UserPlus } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import OtpModal from './OtpModal';
+import velvoraLogo from '../../assets/velvora_logo.png';
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -17,31 +19,46 @@ const RegisterSchema = Yup.object().shape({
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState('user');
+  const [otpEmail, setOtpEmail] = useState(null);  // null = not at OTP step
   const navigate = useNavigate();
 
+  const handleOtpSuccess = () => {
+    navigate('/login');
+  };
+
   return (
-    <div className="bg-[#fafafa] min-h-screen flex items-center justify-center font-sans py-16 px-6">
+    <div className="bg-black min-h-screen flex items-center justify-center font-sans py-16 px-6">
+      {/* OTP Modal */}
+      {otpEmail && (
+        <OtpModal
+          email={otpEmail}
+          onSuccess={handleOtpSuccess}
+          onClose={() => setOtpEmail(null)}
+        />
+      )}
+
       <div className="w-full max-w-xl">
-        
+        {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-[#FFD1DC]/30 mb-6 shadow-sm">
-            <Sparkles size={32} className="text-[#FFD1DC]" />
-          </div>
-          <h2 className="text-4xl font-elegant text-[#000000] mb-3">Join Westion</h2>
-          <p className="text-neutral-500 font-light">Create an account to begin your luxury journey.</p>
+          <Link to="/" className="inline-block mb-6">
+            <img src={velvoraLogo} alt="Velvora" className="h-16 w-16 object-contain rounded-full mx-auto" />
+          </Link>
+          <h2 className="text-4xl font-serif font-bold text-white mb-2 tracking-widest">JOIN VELVORA</h2>
+          <p className="text-neutral-400 font-light text-sm">Create an account to begin your luxury journey.</p>
         </div>
 
-        <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#000000]/5 shadow-sm relative overflow-hidden">
-          
-          <div className="flex justify-center mb-8 bg-[#fafafa] p-1.5 rounded-full border border-[#000000]/10">
+        <div className="bg-white/5 border border-[#f8c8dc]/10 p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-sm">
+          {/* Role Selector */}
+          <div className="flex justify-center mb-8 bg-white/5 p-1.5 rounded-full border border-white/10">
             {['seller', 'user'].map((btnRole) => (
               <button
                 key={btnRole}
+                type="button"
                 onClick={() => setRole(btnRole)}
-                className={`flex-1 py-2 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 ${
-                  role === btnRole 
-                    ? 'bg-[#000000] text-white shadow-md' 
-                    : 'text-neutral-500 hover:text-[#000000]'
+                className={`flex-1 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 ${
+                  role === btnRole
+                    ? 'bg-[#f8c8dc] text-black shadow-md'
+                    : 'text-neutral-500 hover:text-neutral-200'
                 }`}
               >
                 {btnRole}
@@ -58,10 +75,9 @@ const Register = () => {
                   name: values.name,
                   email: values.email,
                   password: values.password,
-                  role: role
+                  role,
                 });
-                alert('Registration successful! Please login.');
-                navigate('/login');
+                setOtpEmail(values.email);
               } catch (error) {
                 setStatus(error.response?.data?.message || 'Registration failed');
               } finally {
@@ -69,94 +85,103 @@ const Register = () => {
               }
             }}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, status }) => (
               <Form className="space-y-6">
-                
+                {status && (
+                  <div className="p-4 bg-red-900/30 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold uppercase tracking-widest text-center">
+                    {status}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Full Name</label>
+                    <label className="block text-xs uppercase tracking-widest text-[#f8c8dc] font-bold mb-2 ml-1">Full Name</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-[#FFD1DC]">
-                        <UserIcon size={18} />
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-[#f8c8dc]">
+                        <UserIcon size={16} />
                       </div>
                       <Field
                         name="name"
                         type="text"
-                        placeholder="John Doe"
-                        className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-all placeholder-neutral-400"
+                        placeholder="Your Name"
+                        className="w-full bg-white/5 border border-white/10 pl-11 pr-4 py-4 rounded-2xl text-white focus:outline-none focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#f8c8dc]/30 transition-all placeholder-neutral-600 text-sm"
                       />
                     </div>
-                    <ErrorMessage name="name" component="div" className="text-red-500 text-xs mt-2 ml-2 font-semibold" />
+                    <ErrorMessage name="name" component="div" className="text-red-400 text-xs mt-2 ml-2 font-semibold" />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Email Address</label>
+                    <label className="block text-xs uppercase tracking-widest text-[#f8c8dc] font-bold mb-2 ml-1">Email Address</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-[#FFD1DC]">
-                        <Mail size={18} />
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-[#f8c8dc]">
+                        <Mail size={16} />
                       </div>
                       <Field
                         name="email"
                         type="email"
                         placeholder="you@example.com"
-                        className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-all placeholder-neutral-400"
+                        className="w-full bg-white/5 border border-white/10 pl-11 pr-4 py-4 rounded-2xl text-white focus:outline-none focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#f8c8dc]/30 transition-all placeholder-neutral-600 text-sm"
                       />
                     </div>
-                    <ErrorMessage name="email" component="div" className="text-red-500 text-xs mt-2 ml-2 font-semibold" />
+                    <ErrorMessage name="email" component="div" className="text-red-400 text-xs mt-2 ml-2 font-semibold" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Password</label>
+                    <label className="block text-xs uppercase tracking-widest text-[#f8c8dc] font-bold mb-2 ml-1">Password</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-[#FFD1DC]">
-                        <Lock size={18} />
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-[#f8c8dc]">
+                        <Lock size={16} />
                       </div>
                       <Field
                         name="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
-                        className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-12 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-all placeholder-neutral-400"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Min. 6 characters"
+                        className="w-full bg-white/5 border border-white/10 pl-11 pr-12 py-4 rounded-2xl text-white focus:outline-none focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#f8c8dc]/30 transition-all placeholder-neutral-600 text-sm"
                       />
-                      <div 
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-neutral-400 hover:text-[#FFD1DC] transition-colors"
+                      <div
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-neutral-500 hover:text-[#f8c8dc] transition-colors"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showPassword ? <Eye size={16} /> : <Eye size={16} />}
                       </div>
                     </div>
-                    <ErrorMessage name="password" component="div" className="text-red-500 text-xs mt-2 ml-2 font-semibold" />
+                    <ErrorMessage name="password" component="div" className="text-red-400 text-xs mt-2 ml-2 font-semibold" />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Confirm Password</label>
+                    <label className="block text-xs uppercase tracking-widest text-[#f8c8dc] font-bold mb-2 ml-1">Confirm Password</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-[#FFD1DC]">
-                        <Lock size={18} />
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-[#f8c8dc]">
+                        <Lock size={16} />
                       </div>
                       <Field
                         name="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Repeat your password"
-                        className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-12 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-all placeholder-neutral-400"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Repeat password"
+                        className="w-full bg-white/5 border border-white/10 pl-11 pr-4 py-4 rounded-2xl text-white focus:outline-none focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#f8c8dc]/30 transition-all placeholder-neutral-600 text-sm"
                       />
                     </div>
-                    <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-xs mt-2 ml-2 font-semibold" />
+                    <ErrorMessage name="confirmPassword" component="div" className="text-red-400 text-xs mt-2 ml-2 font-semibold" />
                   </div>
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex justify-center items-center gap-2 bg-[#000000] text-white py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-[#FFD1DC] hover:text-[#000000] transition-all transform hover:-translate-y-1 shadow-md mb-6"
+                    className="w-full flex justify-center items-center gap-2 bg-[#f8c8dc] text-black py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-white transition-all transform hover:-translate-y-1 shadow-lg mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <UserPlus size={18} /> Create Account
+                    <UserPlus size={16} />
+                    {isSubmitting ? 'Creating Account...' : 'Create Account'}
                   </button>
-                  
+
                   <p className="text-center text-neutral-500 text-sm font-light">
-                    Already part of our family? <Link to="/login" className="text-[#000000] font-bold hover:text-[#FFD1DC] transition-colors">Log in</Link>
+                    Already a member?{' '}
+                    <Link to="/login" className="text-[#f8c8dc] font-bold hover:text-white transition-colors">
+                      Sign in
+                    </Link>
                   </p>
                 </div>
               </Form>

@@ -70,9 +70,9 @@ const AdminDashboard = () => {
         <div className="p-8 border-b border-[#FFD1DC]/10 flex justify-between items-center">
           <div>
             <h3 className="text-2xl font-elegant text-white mb-2">{activeTab} Grid</h3>
-            <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest text-[#FFD1DC]">Config Status & File Management</p>
+            <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc]">Config Status & File Management</p>
           </div>
-          <span className="bg-[#FFD1DC]/20 text-[#FFD1DC] px-4 py-2 rounded-full text-xs uppercase tracking-widest font-bold border border-[#FFD1DC]/30">Active Collection Sync</span>
+          <span className="bg-[#FFD1DC] dark:bg-[#f8c8dc]/20 text-[#FFD1DC] dark:text-[#f8c8dc] px-4 py-2 rounded-full text-xs uppercase tracking-widest font-bold border border-[#FFD1DC]/30">Active Collection Sync</span>
         </div>
         
         {data.length > 0 ? (
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
               <tbody className="divide-y divide-[#FFD1DC]/5">
                 {data.map(record => (
                   <tr key={record._id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-6 text-[#FFD1DC] font-bold text-xs">{record._id}</td>
+                    <td className="p-6 text-[#FFD1DC] dark:text-[#f8c8dc] font-bold text-xs">{record._id}</td>
                     <td className="p-6 flex items-center gap-4">
                       <div className="h-10 w-10 bg-white/10 rounded-full flex items-center justify-center text-white font-elegant">{record.name.charAt(0)}</div>
                       <div>
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
                     {!isSeller && <td className="p-6 text-neutral-300 font-bold uppercase tracking-widest text-[10px]">{record.role}</td>}
                     <td className="p-6">
                       {record.isVerified ? (
-                        <span className="inline-flex items-center gap-1.5 text-[#FFD1DC] text-[10px] font-bold uppercase tracking-widest">
+                        <span className="inline-flex items-center gap-1.5 text-[#FFD1DC] dark:text-[#f8c8dc] text-[10px] font-bold uppercase tracking-widest">
                           <CheckCircle size={14} /> Verified
                         </span>
                       ) : (
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
                       )}
                     </td>
                     <td className="p-6 text-right">
-                      <button className="px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all bg-[#000000] border border-[#FFD1DC]/30 text-[#FFD1DC] hover:bg-[#FFD1DC] hover:text-[#000000]">
+                      <button className="px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all bg-black dark:bg-white/10 border border-[#FFD1DC]/30 text-[#FFD1DC] dark:text-[#f8c8dc] hover:bg-[#FFD1DC] dark:bg-[#f8c8dc] dark:hover:bg-[#f8c8dc] hover:text-black dark:text-white">
                         Edit Profile
                       </button>
                     </td>
@@ -138,15 +138,15 @@ const AdminDashboard = () => {
         <div className="space-y-8 animate-in fade-in duration-700">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-black border border-[#FFD1DC]/30 rounded-2xl p-6 text-white shadow-xl">
-              <h3 className="text-[#FFD1DC] font-bold uppercase tracking-widest text-[10px] mb-3">Total Revenue</h3>
+              <h3 className="text-[#FFD1DC] dark:text-[#f8c8dc] font-bold uppercase tracking-widest text-[10px] mb-3">Total Revenue</h3>
               <p className="text-4xl font-elegant">$130,000</p>
             </div>
             <div className="bg-black border border-[#FFD1DC]/30 rounded-2xl p-6 text-white shadow-xl">
-              <h3 className="text-[#FFD1DC] font-bold uppercase tracking-widest text-[10px] mb-3">Active Users</h3>
+              <h3 className="text-[#FFD1DC] dark:text-[#f8c8dc] font-bold uppercase tracking-widest text-[10px] mb-3">Active Users</h3>
               <p className="text-4xl font-elegant">456</p>
             </div>
             <div className="bg-black border border-[#FFD1DC]/30 rounded-2xl p-6 text-white shadow-xl">
-              <h3 className="text-[#FFD1DC] font-bold uppercase tracking-widest text-[10px] mb-3">Products Listed</h3>
+              <h3 className="text-[#FFD1DC] dark:text-[#f8c8dc] font-bold uppercase tracking-widest text-[10px] mb-3">Products Listed</h3>
               <p className="text-4xl font-elegant">1,248</p>
             </div>
           </div>
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
 
             <div className="bg-white shadow-lg rounded-[2rem] p-8 lg:p-12 border-t-8 border-black lg:col-span-2">
               <h3 className="text-3xl font-elegant text-black mb-4 text-center">Catalog Popularity</h3>
-              <p className="text-center font-bold uppercase tracking-widest text-[#FFD1DC] text-[10px] mb-8">Category Distributions</p>
+              <p className="text-center font-bold uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc] text-[10px] mb-8">Category Distributions</p>
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -209,12 +209,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex bg-[#000000] min-h-screen font-sans selection:bg-[#FFD1DC] selection:text-[#000000]">
+    <div className="flex bg-black dark:bg-white/10 min-h-screen font-sans selection:bg-[#FFD1DC] dark:bg-[#f8c8dc] selection:text-black dark:text-white">
       
       {/* Sidebar Navigation */}
       <aside className="bg-black border-r border-[#FFD1DC]/10 h-screen w-72 text-white p-6 fixed z-20 flex flex-col overflow-y-auto">
         <div className="mb-12 text-center pt-4">
-          <h1 className="text-4xl font-elegant tracking-wide text-[#FFD1DC] drop-shadow-lg mb-2">Westion Setup</h1>
+          <h1 className="text-4xl font-elegant tracking-wide text-[#FFD1DC] dark:text-[#f8c8dc] drop-shadow-lg mb-2">Velvora Admin</h1>
           <p className="text-[10px] uppercase font-bold tracking-widest text-neutral-500">System Command Center</p>
         </div>
 
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
               className={`w-full flex items-center justify-between px-5 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-300 ${
                 activeTab === link.name 
                   ? 'bg-white text-black shadow-lg scale-105' 
-                  : 'text-neutral-400 hover:text-[#000000] hover:bg-[#FFD1DC]'
+                  : 'text-neutral-400 hover:text-black dark:text-white hover:bg-[#FFD1DC] dark:bg-[#f8c8dc] dark:hover:bg-[#f8c8dc]'
               }`}
             >
               <div className="flex items-center gap-4">
@@ -244,11 +244,11 @@ const AdminDashboard = () => {
           <div>
             <h2 className="text-5xl font-elegant text-white mb-2">{activeTab}</h2>
             <div className="flex items-center gap-3">
-              <span className="h-2 w-2 rounded-full bg-[#FFD1DC] animate-pulse"></span>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FFD1DC]">Connected Output Stream</p>
+              <span className="h-2 w-2 rounded-full bg-[#FFD1DC] dark:bg-[#f8c8dc] animate-pulse"></span>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc]">Connected Output Stream</p>
             </div>
           </div>
-          <button className="bg-black border border-[#FFD1DC] text-[#FFD1DC] hover:bg-[#FFD1DC] hover:text-black font-bold uppercase tracking-widest text-[10px] py-3 px-8 rounded-full transition-all duration-300 shadow-xl hidden sm:block">
+          <button className="bg-black border border-[#FFD1DC] text-[#FFD1DC] dark:text-[#f8c8dc] hover:bg-[#FFD1DC] dark:bg-[#f8c8dc] dark:hover:bg-[#f8c8dc] hover:text-black font-bold uppercase tracking-widest text-[10px] py-3 px-8 rounded-full transition-all duration-300 shadow-xl hidden sm:block">
             Export Module Data
           </button>
         </header>

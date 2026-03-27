@@ -23,8 +23,8 @@ const VerifyEmail = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-6 font-sans">
-      <div className="max-w-md w-full bg-white rounded-[40px] shadow-2xl border border-[#000000]/5 p-12 text-center relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-50 dark:bg-black flex items-center justify-center p-6 font-sans">
+      <div className="max-w-md w-full bg-white rounded-[40px] shadow-2xl border border-black/5 dark:border-white/10 p-12 text-center relative overflow-hidden">
         
         {/* Artistic details */}
         <div className="absolute top-0 right-0 p-8 opacity-5">

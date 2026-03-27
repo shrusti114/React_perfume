@@ -34,12 +34,12 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="bg-[#fafafa] min-h-screen text-neutral-800 font-sans py-16 px-6">
+    <div className="bg-neutral-50 dark:bg-black min-h-screen text-neutral-800 font-sans py-16 px-6">
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-elegant text-[#000000] mb-4">Profile Management</h1>
+          <h1 className="text-4xl md:text-5xl font-elegant text-black dark:text-white mb-4">Profile Management</h1>
           <p className="text-neutral-500 font-light text-lg">Manage your personal information, contact details, and account status.</p>
         </div>
 
@@ -47,14 +47,14 @@ const UserDashboard = () => {
           
           {/* Status Sidebar */}
           <div className="md:col-span-1">
-            <div className="bg-white p-8 rounded-3xl border border-[#000000]/5 shadow-sm sticky top-28">
-              <div className="h-24 w-24 bg-[#FFD1DC]/30 rounded-full flex items-center justify-center mb-6 mx-auto">
-                <UserIcon size={40} className="text-[#FFD1DC]" />
+            <div className="bg-white p-8 rounded-3xl border border-black/5 dark:border-white/10 shadow-sm sticky top-28">
+              <div className="h-24 w-24 bg-[#FFD1DC] dark:bg-[#f8c8dc]/30 rounded-full flex items-center justify-center mb-6 mx-auto">
+                <UserIcon size={40} className="text-[#FFD1DC] dark:text-[#f8c8dc]" />
               </div>
-              <h3 className="text-2xl font-elegant text-center text-[#000000] mb-2">{user.name}</h3>
+              <h3 className="text-2xl font-elegant text-center text-black dark:text-white mb-2">{user.name}</h3>
               <p className="text-center text-xs uppercase tracking-widest font-bold text-neutral-400 mb-8">{user.role}</p>
 
-              <div className="border-t border-[#000000]/10 pt-6">
+              <div className="border-t border-black/10 dark:border-white/20 pt-6">
                 <div className="flex justify-between items-center text-sm mb-4">
                   <span className="text-neutral-500 font-semibold uppercase tracking-widest text-[10px]">Verification Status</span>
                   {user.isVerified ? (
@@ -68,8 +68,8 @@ const UserDashboard = () => {
           </div>
 
           {/* Edit Form */}
-          <div className="md:col-span-2 bg-white p-8 md:p-12 rounded-[2rem] border border-[#000000]/5 shadow-sm">
-            <h3 className="text-2xl font-elegant text-[#000000] mb-8">Edit Details</h3>
+          <div className="md:col-span-2 bg-white p-8 md:p-12 rounded-[2rem] border border-black/5 dark:border-white/10 shadow-sm">
+            <h3 className="text-2xl font-elegant text-black dark:text-white mb-8">Edit Details</h3>
             
             {saveSuccess && (
               <div className="bg-green-50 text-green-700 border border-green-200 p-4 rounded-xl mb-8 flex items-center gap-3">
@@ -80,50 +80,50 @@ const UserDashboard = () => {
             <form onSubmit={handleSave} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Full Name</label>
+                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc] font-bold mb-2 ml-1 text-black">Full Name</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
                       <UserIcon size={18} />
                     </div>
-                    <input type="text" name="name" value={user.name} onChange={handleChange} className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-colors" />
+                    <input type="text" name="name" value={user.name} onChange={handleChange} className="w-full bg-neutral-50 dark:bg-black border border-black/10 dark:border-white/20 pl-11 pr-4 py-4 rounded-2xl text-black dark:text-white focus:outline-none focus:border-[#FFD1DC] dark:focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#FFD1DC] dark:focus:ring-[#f8c8dc] transition-colors" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Email Address</label>
+                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc] font-bold mb-2 ml-1 text-black">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
                       <Mail size={18} />
                     </div>
-                    <input type="email" name="email" value={user.email} onChange={handleChange} className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-colors" />
+                    <input type="email" name="email" value={user.email} onChange={handleChange} className="w-full bg-neutral-50 dark:bg-black border border-black/10 dark:border-white/20 pl-11 pr-4 py-4 rounded-2xl text-black dark:text-white focus:outline-none focus:border-[#FFD1DC] dark:focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#FFD1DC] dark:focus:ring-[#f8c8dc] transition-colors" />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Phone Number</label>
+                <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc] font-bold mb-2 ml-1 text-black">Phone Number</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
                     <Phone size={18} />
                   </div>
-                  <input type="text" name="phone" value={user.phone} onChange={handleChange} placeholder="Add your phone number" className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-colors" />
+                  <input type="text" name="phone" value={user.phone} onChange={handleChange} placeholder="Add your phone number" className="w-full bg-neutral-50 dark:bg-black border border-black/10 dark:border-white/20 pl-11 pr-4 py-4 rounded-2xl text-black dark:text-white focus:outline-none focus:border-[#FFD1DC] dark:focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#FFD1DC] dark:focus:ring-[#f8c8dc] transition-colors" />
                 </div>
               </div>
 
               {user.role === 'seller' && (
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] font-bold mb-2 ml-1 text-black">Boutique / Shop Name</label>
+                  <label className="block text-xs uppercase tracking-widest text-[#FFD1DC] dark:text-[#f8c8dc] font-bold mb-2 ml-1 text-black">Boutique / Shop Name</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
                       <Store size={18} />
                     </div>
-                    <input type="text" name="shopName" value={user.shopName} onChange={handleChange} placeholder="Your storefront name" className="w-full bg-[#fafafa] border border-[#000000]/10 pl-11 pr-4 py-4 rounded-2xl text-[#000000] focus:outline-none focus:border-[#FFD1DC] focus:ring-1 focus:ring-[#FFD1DC] transition-colors" />
+                    <input type="text" name="shopName" value={user.shopName} onChange={handleChange} placeholder="Your storefront name" className="w-full bg-neutral-50 dark:bg-black border border-black/10 dark:border-white/20 pl-11 pr-4 py-4 rounded-2xl text-black dark:text-white focus:outline-none focus:border-[#FFD1DC] dark:focus:border-[#f8c8dc] focus:ring-1 focus:ring-[#FFD1DC] dark:focus:ring-[#f8c8dc] transition-colors" />
                   </div>
                 </div>
               )}
 
-              <div className="pt-6 border-t border-[#000000]/5 mt-8">
-                <button type="submit" disabled={isSaving} className="flex items-center justify-center gap-2 bg-[#000000] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#FFD1DC] hover:text-[#000000] transition-all transform hover:-translate-y-1 shadow-md">
+              <div className="pt-6 border-t border-black/5 dark:border-white/10 mt-8">
+                <button type="submit" disabled={isSaving} className="flex items-center justify-center gap-2 bg-black dark:bg-white/10 text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#FFD1DC] dark:bg-[#f8c8dc] dark:hover:bg-[#f8c8dc] hover:text-black dark:text-white transition-all transform hover:-translate-y-1 shadow-md">
                   <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>

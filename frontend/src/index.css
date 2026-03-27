@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
 
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
@@ -12,6 +13,12 @@
     background-color: #fafafa;
     color: #000000;
     font-family: 'Outfit', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: #0a0a0a;
+    color: #ffffff;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -30,10 +37,16 @@
 ::-webkit-scrollbar-track {
   background: #fafafa;
 }
+.dark ::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
 ::-webkit-scrollbar-thumb {
   background: #FFD1DC;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #000000;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
 }
