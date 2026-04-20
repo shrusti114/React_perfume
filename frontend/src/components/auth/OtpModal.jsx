@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Mail, RotateCcw } from 'lucide-react';
-import axios from 'axios';
+import authService from '../../services/authService';
 
 const OtpModal = ({ email, onSuccess, onClose }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -36,6 +36,7 @@ const OtpModal = ({ email, onSuccess, onClose }) => {
   };
 
   const handlePaste = (e) => {
+    e.preventDefault();
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
     if (pasted.length === 6) {
       setOtp(pasted.split(''));
@@ -52,13 +53,10 @@ const OtpModal = ({ email, onSuccess, onClose }) => {
     }
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/verify-otp', {
-        email,
-        otp: code,
-      });
+      const data = await authService.verifyOtp(email, code);
       onSuccess(data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Verification failed. Please try again.');
+      setError(err.message || 'Verification failed. Please try again.');
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
@@ -70,11 +68,11 @@ const OtpModal = ({ email, onSuccess, onClose }) => {
     if (resendCountdown > 0) return;
     setResendLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/send-otp', { email });
+      await authService.sendOtp(email);
       setResendCountdown(60);
       setError('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to resend OTP');
+      setError(err.message || 'Failed to resend OTP');
     } finally {
       setResendLoading(false);
     }
@@ -104,6 +102,9 @@ const OtpModal = ({ email, onSuccess, onClose }) => {
         </div>
 
         {/* OTP Inputs */}
+        <p className="text-center text-[#f8c8dc]/70 text-[10px] mb-4 uppercase tracking-widest mt-[-10px]">
+          Tip: Check your backend terminal for the code!<br/>(or use master OTP <strong className="text-[#f8c8dc]">000000</strong>)
+        </p>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-3 justify-center mb-6" onPaste={handlePaste}>
             {otp.map((digit, index) => (

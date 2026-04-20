@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { User, Mail, Phone, MapPin, FileText, Lock, Camera, CheckCircle, AlertCircle, Save, Sparkles } from 'lucide-react';
+import { useUserProfile, useUpdateProfile, useChangePassword } from '../../hooks/useApi';
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string().required('Full name is required'),
@@ -22,112 +22,99 @@ const PasswordSchema = Yup.object().shape({
 });
 
 const SellerProfile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data: user, isLoading: loading } = useUserProfile();
+  const updateProfile = useUpdateProfile();
+  const changePassword = useChangePassword();
+
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:5000/api/users/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUser(data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleProfileSubmit = (values, { setSubmitting }) => {
+    updateProfile.mutate(values, {
+      onSuccess: (data) => {
+        localStorage.setItem('userName', data.name);
+        setMessage({ type: 'success', text: 'Profile synchronization complete.' });
+        setSubmitting(false);
+        setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+      },
+      onError: (err) => {
+        setMessage({ type: 'error', text: err.response?.data?.message || 'Update failed' });
+        setSubmitting(false);
+        setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+      }
+    });
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const handleProfileSubmit = async (values, { setSubmitting }) => {
-    try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.put('http://localhost:5000/api/users/profile', values, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUser(data);
-      localStorage.setItem('userName', data.name);
-      setMessage({ type: 'success', text: 'Profile updated flawlessly.' });
-    } catch (error) {
-      setMessage({ type: 'error', text: error.response?.data?.message || 'Update failed' });
-    } finally {
-      setSubmitting(false);
-      setTimeout(() => setMessage({ type: '', text: '' }), 5000);
-    }
+  const handlePasswordSubmit = (values, { setSubmitting, resetForm }) => {
+    changePassword.mutate({
+      currentPassword: values.currentPassword,
+      newPassword: values.newPassword
+    }, {
+      onSuccess: () => {
+        setMessage({ type: 'success', text: 'Security credentials rotated.' });
+        resetForm();
+        setSubmitting(false);
+        setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+      },
+      onError: (err) => {
+        setMessage({ type: 'error', text: err.response?.data?.message || 'Key rotation failed' });
+        setSubmitting(false);
+        setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+      }
+    });
   };
 
-  const handlePasswordSubmit = async (values, { setSubmitting, resetForm }) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/users/change-password', {
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage({ type: 'success', text: 'Security credentials updated.' });
-      resetForm();
-    } catch (error) {
-      setMessage({ type: 'error', text: error.response?.data?.message || 'Password change failed' });
-    } finally {
-      setSubmitting(false);
-      setTimeout(() => setMessage({ type: '', text: '' }), 5000);
-    }
-  };
-
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div></div>;
+  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#D9A0A0] dark:border-[#00D4FF]"></div></div>;
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-12 pb-20">
       
       {message.text && (
-        <div className={`fixed top-24 right-10 z-50 p-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'}`}>
+        <div className={`fixed top-24 right-10 z-50 p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-3 animate-in slide-in-from-right-4 duration-300 ${message.type === 'success' ? 'bg-white dark:bg-[#202231] text-[#D9A0A0] dark:text-[#00D4FF] border border-[#D9A0A0]/30 dark:border-[#00D4FF]/30' : 'bg-white dark:bg-[#202231] text-rose-500 border border-rose-200 dark:border-rose-500/30'}`}>
           {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-          <span className="text-sm font-bold uppercase tracking-widest">{message.text}</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{message.text}</span>
         </div>
       )}
 
       {/* Profile Header */}
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-200 to-rose-200 opacity-20 blur-3xl rounded-[60px]"></div>
-        <div className="relative bg-white/70 backdrop-blur-2xl rounded-[40px] p-10 border border-white/50 shadow-sm flex flex-col md:flex-row items-center gap-10">
+        <div className="absolute inset-0 bg-[#D9A0A0] dark:bg-[#00D4FF] opacity-[0.03] dark:opacity-[0.05] blur-3xl rounded-[4rem]"></div>
+        <div className="relative bg-white dark:bg-[#202231] rounded-[3rem] p-10 border border-[#D9A0A0]/10 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-xl flex flex-col md:flex-row items-center gap-10 overflow-hidden">
+          <div className="absolute top-0 right-0 p-10 opacity-5 dark:opacity-10 pointer-events-none text-[#D9A0A0] dark:text-[#00D4FF]">
+            <Sparkles size={200} />
+          </div>
+
           <div className="relative group/avatar">
-            <div className="w-40 h-40 rounded-[40px] bg-neutral-100 overflow-hidden border-4 border-white shadow-xl flex items-center justify-center">
+            <div className="w-40 h-40 rounded-full bg-[#FAFAFA] dark:bg-[#1a1c27] overflow-hidden border border-[#D9A0A0]/20 dark:border-[#00D4FF]/20 shadow-inner flex items-center justify-center">
               {user?.profileImage ? (
-                <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover opacity-90 mix-blend-multiply dark:mix-blend-normal" />
               ) : (
-                <User size={64} className="text-neutral-300" />
+                <User size={64} className="text-[#D9A0A0]/50 dark:text-[#00D4FF]/50" />
               )}
             </div>
-            <button className="absolute -bottom-2 -right-2 w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center shadow-lg hover:bg-pink-500 transition-all transform hover:scale-110">
-              <Camera size={20} />
+            <button className="absolute bottom-0 right-4 w-12 h-12 bg-white dark:bg-[#2a2d3e] text-[#D9A0A0] dark:text-[#00D4FF] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(217,160,160,0.2)] dark:shadow-[0_4px_20px_rgba(0,212,255,0.2)] hover:bg-[#D9A0A0] dark:hover:bg-[#00D4FF] hover:text-white dark:hover:text-black border border-[#D9A0A0]/20 dark:border-[#00D4FF]/20 transition-all transform hover:scale-110">
+              <Camera size={18} />
             </button>
           </div>
           
-          <div className="text-center md:text-left flex-grow">
+          <div className="text-center md:text-left flex-grow z-10">
             <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
-              <h2 className="text-4xl font-elegant text-neutral-800">{user?.name}</h2>
+              <h2 className="text-4xl font-bold tracking-tight text-neutral-800 dark:text-white">{user?.name}</h2>
               {user?.isVerified && (
-                <span className="bg-emerald-50 text-emerald-600 p-1.5 rounded-full" title="Verified Seller">
-                  <CheckCircle size={16} fill="currentColor" className="text-white" />
+                <span className="bg-[#D9A0A0]/10 dark:bg-[#00D4FF]/10 border border-[#D9A0A0]/30 dark:border-[#00D4FF]/30 text-[#D9A0A0] dark:text-[#00D4FF] p-1.5 rounded-full" title="Authorized Rank">
+                  <CheckCircle size={16} fill="currentColor" className="text-white dark:text-[#202231]" />
                 </span>
               )}
             </div>
-            <p className="text-neutral-500 font-light text-lg mb-6">{user?.shopName || 'Independent Fragrance Seller'}</p>
+            <p className="text-[#D9A0A0] dark:text-[#00D4FF] font-medium text-sm tracking-widest uppercase mb-6">{user?.shopName || 'Independent Associate'}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <span className="px-4 py-2 bg-neutral-50 border border-neutral-100 rounded-full text-[10px] font-bold uppercase tracking-widest text-neutral-400">ROLE: {user?.role}</span>
-              <span className="px-4 py-2 bg-neutral-50 border border-neutral-100 rounded-full text-[10px] font-bold uppercase tracking-widest text-neutral-400">ID: {user?._id}</span>
+              <span className="px-5 py-2 bg-[#FAFAFA] dark:bg-[#1a1c27] border border-[#D9A0A0]/10 dark:border-white/5 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-500 dark:text-gray-400 shadow-sm">Class: {user?.role}</span>
+              <span className="px-5 py-2 bg-[#FAFAFA] dark:bg-[#1a1c27] border border-[#D9A0A0]/10 dark:border-white/5 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-500 dark:text-gray-400 shadow-sm">ID: {user?._id?.substring(0, 8)}</span>
             </div>
           </div>
 
-          <div className="bg-white/50 p-6 rounded-3xl border border-white/80 shadow-inner text-center">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-2">Member Since</p>
-            <p className="text-xl font-elegant text-neutral-800">{new Date(user?.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+          <div className="bg-[#FAFAFA] dark:bg-[#1a1c27] p-8 rounded-[2rem] border border-[#D9A0A0]/10 dark:border-white/5 shadow-inner text-center z-10 min-w-[200px]">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 mb-2">Network Induction</p>
+            <p className="text-xl font-bold text-neutral-800 dark:text-white tracking-widest uppercase">{new Date(user?.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</p>
           </div>
         </div>
       </div>
@@ -135,13 +122,10 @@ const SellerProfile = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left Column: Form */}
         <div className="lg:col-span-8 space-y-10">
-          <div className="bg-white/70 backdrop-blur-xl rounded-[40px] p-10 border border-white/50 shadow-sm relative overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-5">
-               <Sparkles size={120} />
-             </div>
+          <div className="bg-white dark:bg-[#202231] rounded-[3rem] p-10 border border-[#D9A0A0]/10 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-xl relative overflow-hidden">
              
-             <h3 className="text-2xl font-elegant text-neutral-800 mb-10 flex items-center gap-4">
-               <div className="w-1.5 h-8 bg-pink-400 rounded-full"></div> Professional Identity
+             <h3 className="text-[15px] font-bold text-neutral-800 dark:text-white tracking-wider uppercase opacity-90 mb-10 flex items-center gap-4">
+               <div className="w-1.5 h-6 bg-[#D9A0A0] dark:bg-[#00D4FF] rounded-full shadow-[0_0_10px_rgba(217,160,160,0.4)] dark:shadow-[0_0_10px_rgba(0,212,255,0.4)]"></div> Operative Profile
              </h3>
 
              <Formik
@@ -155,59 +139,60 @@ const SellerProfile = () => {
                }}
                validationSchema={ProfileSchema}
                onSubmit={handleProfileSubmit}
+               enableReinitialize
              >
                {({ isSubmitting }) => (
                  <Form className="space-y-8">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Full Name</label>
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Designation</label>
                        <div className="relative group">
-                         <User size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field name="name" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800" />
+                         <User size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field name="name" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] shadow-sm" />
                        </div>
-                       <ErrorMessage name="name" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                       <ErrorMessage name="name" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                      </div>
 
                      <div className="space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Email Essence</label>
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Comms Signal</label>
                        <div className="relative group">
-                         <Mail size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field name="email" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800" />
+                         <Mail size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field name="email" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] shadow-sm" />
                        </div>
-                       <ErrorMessage name="email" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                       <ErrorMessage name="email" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                      </div>
 
                      <div className="space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Contact Signal</label>
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Secure Frequency</label>
                        <div className="relative group">
-                         <Phone size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field name="phone" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800" placeholder="+1 (555) 000-0000" />
+                         <Phone size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field name="phone" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] shadow-sm" placeholder="+1 (555) 000-0000" />
                        </div>
                      </div>
 
                      <div className="space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Boutique Name</label>
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Boutique Name</label>
                        <div className="relative group">
-                         <Sparkles size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field name="shopName" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800" />
+                         <Sparkles size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field name="shopName" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] shadow-sm" />
                        </div>
                      </div>
 
                      <div className="md:col-span-2 space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Base of Operations</label>
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Base Coordinates</label>
                        <div className="relative group">
-                         <MapPin size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field name="address" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800" placeholder="Physical location or headquarters" />
+                         <MapPin size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field name="address" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] shadow-sm" placeholder="Physical location or headquarters" />
                        </div>
                      </div>
 
                      <div className="md:col-span-2 space-y-3">
-                       <label className="text-xs font-bold uppercase tracking-widest text-neutral-400 px-1">Artisan Biography</label>
-                       <div className="relative group">
-                         <FileText size={18} className="absolute left-5 top-5 text-neutral-300 group-focus-within:text-pink-400 transition-colors" />
-                         <Field as="textarea" name="bio" rows="4" className="w-full bg-neutral-50/50 border border-neutral-100 pl-14 pr-6 py-5 rounded-[24px] focus:ring-2 focus:ring-pink-100 focus:bg-white focus:border-pink-300 transition-all outline-none text-neutral-800 resize-none" placeholder="Tell your customers about your passion for scents..." />
+                       <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-gray-500 px-1">Operative Biography</label>
+                       <div className="relative group flex items-start">
+                         <FileText size={16} className="absolute left-5 top-5 text-neutral-400 dark:text-gray-500 group-focus-within:text-[#D9A0A0] dark:group-focus-within:text-[#00D4FF] transition-colors" />
+                         <Field as="textarea" name="bio" rows="4" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 transition-all outline-none text-neutral-800 dark:text-white text-[11px] resize-none shadow-sm" placeholder="Provide background intel..." />
                        </div>
-                       <ErrorMessage name="bio" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                       <ErrorMessage name="bio" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                      </div>
                    </div>
 
@@ -215,9 +200,9 @@ const SellerProfile = () => {
                      <button 
                        type="submit" 
                        disabled={isSubmitting}
-                       className="flex items-center gap-3 bg-black text-white px-10 py-5 rounded-[24px] font-bold uppercase tracking-widest hover:bg-pink-500 transition-all shadow-xl hover:-translate-y-1 disabled:opacity-50"
+                       className="flex items-center justify-center w-full md:w-auto gap-3 bg-[#D9A0A0] dark:bg-[#00D4FF] text-white dark:text-black px-10 py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-[#E5B5B5] dark:hover:bg-cyan-300 transition-all shadow-[0_4px_15px_rgba(217,160,160,0.3)] dark:shadow-[0_0_15px_rgba(0,212,255,0.4)] disabled:opacity-50"
                      >
-                       <Save size={18} /> {isSubmitting ? 'Preserving...' : 'Save Refinement'}
+                       <Save size={16} /> {isSubmitting ? 'Syncing...' : 'Lock Configurations'}
                      </button>
                    </div>
                  </Form>
@@ -228,9 +213,9 @@ const SellerProfile = () => {
 
         {/* Right Column: Security & Suggestions */}
         <div className="lg:col-span-4 space-y-10">
-          <div className="bg-white/70 backdrop-blur-xl rounded-[40px] p-8 border border-white/50 shadow-sm">
-            <h3 className="text-xl font-elegant text-neutral-800 mb-8 flex items-center gap-4">
-              <Lock size={20} className="text-pink-400" /> Vault Security
+          <div className="bg-white dark:bg-[#202231] rounded-[3rem] p-10 border border-[#D9A0A0]/10 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-xl">
+            <h3 className="text-[13px] font-bold uppercase tracking-widest text-neutral-800 dark:text-white mb-8 flex items-center gap-4">
+              <Lock size={16} className="text-[#D9A0A0] dark:text-[#00D4FF]" /> Core Security
             </h3>
 
             <Formik
@@ -241,42 +226,42 @@ const SellerProfile = () => {
               {({ isSubmitting }) => (
                 <Form className="space-y-6">
                   <div className="space-y-2">
-                    <Field name="currentPassword" type="password" placeholder="Current Password" className="w-full bg-neutral-50 border border-neutral-100 px-6 py-4 rounded-2xl focus:ring-1 focus:ring-pink-300 outline-none text-sm" />
-                    <ErrorMessage name="currentPassword" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                    <Field name="currentPassword" type="password" placeholder="Current Clearance Key" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 px-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 outline-none text-neutral-800 dark:text-white text-[10px] tracking-widest shadow-sm" />
+                    <ErrorMessage name="currentPassword" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                   </div>
                   <div className="space-y-2">
-                    <Field name="newPassword" type="password" placeholder="New Password" className="w-full bg-neutral-50 border border-neutral-100 px-6 py-4 rounded-2xl focus:ring-1 focus:ring-pink-300 outline-none text-sm" />
-                    <ErrorMessage name="newPassword" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                    <Field name="newPassword" type="password" placeholder="New Clearance Key" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 px-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 outline-none text-neutral-800 dark:text-white text-[10px] tracking-widest shadow-sm" />
+                    <ErrorMessage name="newPassword" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                   </div>
                   <div className="space-y-2">
-                    <Field name="confirmPassword" type="password" placeholder="Confirm New Password" className="w-full bg-neutral-50 border border-neutral-100 px-6 py-4 rounded-2xl focus:ring-1 focus:ring-pink-300 outline-none text-sm" />
-                    <ErrorMessage name="confirmPassword" component="div" className="text-rose-500 text-[10px] font-bold uppercase ml-2" />
+                    <Field name="confirmPassword" type="password" placeholder="Confirm New Key" className="w-full bg-white dark:bg-[#2a2d3e] border border-[#D9A0A0]/20 dark:border-white/5 px-6 py-4 rounded-2xl focus:border-[#D9A0A0] dark:focus:border-[#00D4FF] focus:ring-2 focus:ring-[#D9A0A0]/10 dark:focus:ring-[#00D4FF]/20 outline-none text-neutral-800 dark:text-white text-[10px] tracking-widest shadow-sm" />
+                    <ErrorMessage name="confirmPassword" component="div" className="text-rose-500 text-[9px] font-bold uppercase tracking-widest ml-2" />
                   </div>
-                  <button type="submit" disabled={isSubmitting} className="w-full bg-neutral-800 text-white py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-black transition-all text-[10px] disabled:opacity-50">
-                    {isSubmitting ? 'Securing...' : 'Rotate Password'}
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-white dark:bg-[#1a1c27] text-neutral-600 dark:text-gray-400 py-4 rounded-2xl font-bold uppercase tracking-[0.2em] hover:bg-[#FAFAFA] dark:hover:bg-white/5 hover:text-[#D9A0A0] dark:hover:text-[#00D4FF] transition-all text-[9px] border border-[#D9A0A0]/20 dark:border-white/10 disabled:opacity-50 shadow-sm">
+                    {isSubmitting ? 'Authenticating...' : 'Rotate Cipher'}
                   </button>
                 </Form>
               )}
             </Formik>
           </div>
 
-          <div className="bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-[40px] p-8 text-white relative overflow-hidden group">
-            <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
-               <Sparkles size={200} />
+          <div className="bg-gradient-to-br from-[#FAFAFA] to-white dark:from-[#1a1c27] dark:to-[#202231] rounded-[3rem] p-10 border border-[#D9A0A0]/10 dark:border-white/5 text-neutral-800 relative overflow-hidden group shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-xl">
+            <div className="absolute -right-8 -bottom-8 opacity-[0.03] dark:opacity-10 group-hover:scale-110 transition-transform duration-1000 text-[#D9A0A0] dark:text-[#00D4FF] mix-blend-multiply dark:mix-blend-normal pointer-events-none">
+               <Sparkles size={160} />
             </div>
-            <h3 className="text-xl font-elegant mb-6 relative z-10">Boutique Advice</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-widest mb-8 text-[#D9A0A0] dark:text-[#00D4FF] relative z-10">System Directives</h3>
             <ul className="space-y-6 relative z-10">
               <li className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-pink-300 font-bold text-xs">1</div>
-                <p className="text-sm font-light text-neutral-300 leading-relaxed">Ensure your <span className="text-white font-medium">Boutique Name</span> reflects your brand's essence for better customer trust.</p>
+                <div className="w-6 h-6 rounded-full bg-[#D9A0A0]/10 dark:bg-[#00D4FF]/10 text-[#D9A0A0] dark:text-[#00D4FF] flex items-center justify-center flex-shrink-0 font-bold text-[9px] border border-[#D9A0A0]/20 dark:border-[#00D4FF]/20">1</div>
+                <p className="text-[10px] font-medium text-neutral-500 dark:text-gray-400 leading-relaxed uppercase tracking-widest">Alignment of <span className="text-neutral-800 dark:text-white">Boutique Name</span> enhances network trust scores.</p>
               </li>
               <li className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-pink-300 font-bold text-xs">2</div>
-                <p className="text-sm font-light text-neutral-300 leading-relaxed">Upload a <span className="text-white font-medium">Professional Image</span> to add a human touch to your digital storefront.</p>
+                <div className="w-6 h-6 rounded-full bg-[#D9A0A0]/10 dark:bg-[#00D4FF]/10 text-[#D9A0A0] dark:text-[#00D4FF] flex items-center justify-center flex-shrink-0 font-bold text-[9px] border border-[#D9A0A0]/20 dark:border-[#00D4FF]/20">2</div>
+                <p className="text-[10px] font-medium text-neutral-500 dark:text-gray-400 leading-relaxed uppercase tracking-widest">Secure a <span className="text-neutral-800 dark:text-white">Visual Identity</span> to establish human connection protocols.</p>
               </li>
               <li className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-pink-300 font-bold text-xs">3</div>
-                <p className="text-sm font-light text-neutral-300 leading-relaxed">Update your <span className="text-white font-medium">Bio</span> with your fragrance philosophy to connect with true enthusiasts.</p>
+                <div className="w-6 h-6 rounded-full bg-[#D9A0A0]/10 dark:bg-[#00D4FF]/10 text-[#D9A0A0] dark:text-[#00D4FF] flex items-center justify-center flex-shrink-0 font-bold text-[9px] border border-[#D9A0A0]/20 dark:border-[#00D4FF]/20">3</div>
+                <p className="text-[10px] font-medium text-neutral-500 dark:text-gray-400 leading-relaxed uppercase tracking-widest">Update <span className="text-neutral-800 dark:text-white">Operative Biography</span> to synchronize with syndicate standards.</p>
               </li>
             </ul>
           </div>

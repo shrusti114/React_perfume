@@ -20,6 +20,10 @@ const productSchema = new mongoose.Schema({
     heart: [String],
     base: [String],
   },
-}, { timestamps: true });
+  discount_price: { type: Number },
+  status: { type: String, enum: ['Active', 'Inactive', 'Out of Stock'], default: 'Active' },
+  average_rating: { type: Number, default: 0, min: 0, max: 5 },
+  total_reviews: { type: Number, default: 0 },
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 module.exports = mongoose.model('Product', productSchema);

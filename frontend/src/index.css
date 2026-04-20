@@ -1,17 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 @custom-variant dark (&:is(.dark *));
-
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-
 @theme {
+  --color-gold-50: #fffcf0;
+  --color-gold-100: #fff1c2;
+  --color-gold-200: #ffe385;
+  --color-gold-300: #ffd047;
+  --color-gold-400: #ffb91a;
+  --color-gold-500: #f79a00;
+  --color-gold-600: #d67800;
+  --color-gold-700: #ae5800;
+  --color-gold-800: #8c440a;
+  --color-gold-900: #74380d;
+  --color-gold-950: #431c03;
+  --color-velvora-gold: #C5A059;
   --font-elegant: 'Playfair Display', serif;
   --font-cursive: 'Great Vibes', cursive;
 }
 
 @layer base {
   body {
-    background-color: #fafafa;
-    color: #000000;
+    background-color: #050505;
+    color: #ffffff;
     font-family: 'Outfit', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
   }

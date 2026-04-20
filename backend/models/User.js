@@ -16,8 +16,13 @@ const userSchema = new mongoose.Schema({
   profileImage: { type: String, default: '' },
   bio: { type: String, default: '' },
   address: { type: String, default: '' },
-  shopName: { type: String },
+  // General
+  username: { type: String, unique: true, sparse: true, trim: true },
+  gender: { type: String, enum: ['male', 'female', 'non-binary', 'other', 'prefer not to say'] },
+  dob: { type: Date },
   phone: { type: String },
-}, { timestamps: true });
+  wishlist: [{ type: String, ref: 'Product' }],
+  status: { type: String, enum: ['active', 'inactive', 'suspended', 'pending'], default: 'active' },
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 module.exports = mongoose.model('User', userSchema);

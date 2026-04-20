@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 const Sidebar = ({ role }) => (
   <div className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-white/90 to-gray-100/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 z-40">

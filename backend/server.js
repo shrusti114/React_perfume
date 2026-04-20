@@ -10,11 +10,26 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
-app.use(express.json());
+// Diagnostic Logger for 403 Investigation
+app.use((req, res, next) => {
+  console.log(`[DIAGNOSTIC] ${req.method} ${req.url} arriving from ${req.headers.origin || 'unknown'}`);
+  console.log(`[DIAGNOSTIC] Headers:`, JSON.stringify(req.headers, null, 2));
+  next();
+});
+
 app.use(cors());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URL || "mongodb://127.0.0.1:27017/perfume")
@@ -28,6 +43,13 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/seller', sellerRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Perfume Backend API Running with full CRUD operations");

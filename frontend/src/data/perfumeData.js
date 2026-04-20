@@ -4,26 +4,18 @@
  */
 
 const perfumeImages = [
-  'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=600',
   'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600',
+  'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=600',
   'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=600',
   'https://images.unsplash.com/photo-1615529328331-f8917597711f?q=80&w=600',
   'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=600',
   'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?q=80&w=600',
-  'https://images.unsplash.com/photo-1600612253971-29bede1534a4?q=80&w=600',
   'https://images.unsplash.com/photo-1619994121345-b61cd610c5a6?q=80&w=600',
-  'https://images.unsplash.com/photo-1650893077759-8dd3383a155c?q=80&w=600',
-  'https://images.unsplash.com/photo-1601660424536-1e64d7883907?q=80&w=600',
   'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600',
   'https://images.unsplash.com/photo-1590156206657-aec7b3d87a57?q=80&w=600',
-  'https://images.unsplash.com/photo-1547887538-047f5c5e9bd7?q=80&w=600',
-  'https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=600',
-  'https://images.unsplash.com/photo-1587017539504-67cfbddac569?q=80&w=600',
   'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=600',
   'https://images.unsplash.com/photo-1557170334-a9632e77c6e4?q=80&w=600',
   'https://images.unsplash.com/photo-1528740096961-3798add15914?q=80&w=600',
-  'https://images.unsplash.com/photo-1616093875201-279f12cc42c2?q=80&w=600',
-  'https://images.unsplash.com/photo-1606741965429-88247b729837?q=80&w=600',
 ];
 
 const families = ['Floral', 'Woody', 'Fresh', 'Oriental', 'Luxury Collection'];
@@ -117,6 +109,13 @@ const badges = [
   'Trending', 'Staff Pick',
 ];
 
+const volumes = ['30 ml', '50 ml', '75 ml', '100 ml', '125 ml'];
+const concentrations = ['EDP', 'EDT', 'Parfum', 'Cologne'];
+
+const topNotes = ['Bergamot', 'Pink Pepper', 'Mandarin', 'Grapefruit', 'Saffron', 'Cardamom', 'Lemon Zest', 'Green Apple', 'Pear', 'Blackcurrant'];
+const heartNotes = ['Rose', 'Jasmine', 'Iris', 'Tuberose', 'Ylang-Ylang', 'Peony', 'Violet', 'Magnolia', 'Lily of the Valley', 'Orchid'];
+const baseNotes = ['Sandalwood', 'Vetiver', 'Tonka Bean', 'Vanilla', 'Musk', 'Amber', 'Cedar', 'Patchouli', 'Oud', 'Leather'];
+
 /* ── Generate All Products ──────────── */
 let productId = 1;
 
@@ -131,10 +130,12 @@ function generateProducts() {
       const family = families[(brandIndex + i) % families.length];
       const category = genderCategories[(brandIndex + i) % genderCategories.length];
       const desc = descriptions[(brandIndex * 3 + i * 2) % descriptions.length];
-      const imageIdx = (brandIndex + i) % perfumeImages.length;
+      // Multiply by a coprime (17) to scramble images and prevent clustering
+      const imageIdx = (productId * 17) % perfumeImages.length;
       const price = Math.round(50 + Math.random() * 450);
       const rating = (4 + Math.random()).toFixed(1);
       const hasBadge = (brandIndex * 10 + i) % 5 === 0;
+      const seed = brandIndex * 10 + i;
 
       allProducts.push({
         _id: String(productId++),
@@ -143,10 +144,18 @@ function generateProducts() {
         price,
         family,
         category,
+        gender: category,
         description: desc,
         image: perfumeImages[imageIdx],
         rating: parseFloat(rating),
         badge: hasBadge ? badges[(brandIndex + i) % badges.length] : null,
+        volume: volumes[seed % volumes.length],
+        concentration: concentrations[seed % concentrations.length],
+        notes: {
+          top: [topNotes[seed % topNotes.length], topNotes[(seed + 3) % topNotes.length]],
+          heart: [heartNotes[(seed + 1) % heartNotes.length], heartNotes[(seed + 4) % heartNotes.length]],
+          base: [baseNotes[(seed + 2) % baseNotes.length], baseNotes[(seed + 5) % baseNotes.length]],
+        },
       });
     }
   });
@@ -202,6 +211,11 @@ export const featuredProducts = allProducts.filter(p => p.badge === 'Editor\'s P
 export const bestSellers = allProducts.filter(p => p.badge === 'Best Seller').slice(0, 8);
 export const newArrivals = allProducts.filter(p => p.badge === 'New Arrival').slice(0, 8);
 export const trending = allProducts.filter(p => p.badge === 'Trending').slice(0, 8);
+
+// Guarantee perfect visual variety on the homepage by explicitly overriding layout arrays
+bestSellers.forEach((p, idx) => p.image = perfumeImages[idx % perfumeImages.length]);
+newArrivals.forEach((p, idx) => p.image = perfumeImages[(idx + 4) % perfumeImages.length]);
+trending.forEach((p, idx) => p.image = perfumeImages[(idx + 8) % perfumeImages.length]);
 
 /* ── Get unique brands list ─────────── */
 export const uniqueBrands = [...new Set(allProducts.map(p => p.brand))];
