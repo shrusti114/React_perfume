@@ -34,12 +34,12 @@ export function OrderManagementTable({ orders, onUpdateStatus }) {
       header: 'Order ID',
       cell: info => <span className="font-mono text-[10px] text-neutral-400">#{info.getValue().slice(-8)}</span>,
     }),
-    columnHelper.accessor('user.name', {
+    columnHelper.accessor('userId.name', {
       header: 'Customer',
       cell: info => (
         <div className="flex flex-col">
-          <span className="font-bold text-sm">{info.getValue()}</span>
-          <span className="text-[10px] text-neutral-500">{info.row.original.user.email}</span>
+          <span className="font-bold text-sm">{info.getValue() || 'Guest'}</span>
+          <span className="text-[10px] text-neutral-500">{info.row.original.userId?.email || info.row.original.guestInfo?.email || 'N/A'}</span>
         </div>
       ),
     }),

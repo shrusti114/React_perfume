@@ -7,7 +7,7 @@ const { authorize } = require('../middleware/roleMiddleware');
 router.post('/', createOrder);
 router.get('/', protect, authorize('admin'), getAllOrders);
 
-router.get('/seller', protect, authorize('seller'), getSellerOrders);
+router.get('/seller', protect, authorize('seller', 'admin'), getSellerOrders);
 
 router.get('/track/:id', trackOrder); // Publicly accessible tracking
 

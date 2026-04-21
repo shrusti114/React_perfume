@@ -8,7 +8,7 @@ router.route('/')
   .get(getProducts)
   .post(protect, authorize('admin', 'seller'), createProduct);
 
-router.get('/seller', protect, authorize('seller'), getSellerProducts);
+router.get('/seller', protect, authorize('seller', 'admin'), getSellerProducts);
 
 router.route('/:id')
   .get(getProductById)

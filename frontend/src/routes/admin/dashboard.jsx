@@ -1,5 +1,5 @@
 import React from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { AdminStats } from '../../features/admin/components/AdminStats';
 import { OrderManagementTable } from '../../features/admin/components/OrderManagementTable';
 import { ProductManagementTable } from '../../features/admin/components/ProductManagementTable';
@@ -19,5 +19,11 @@ const AdminDashboardPage = () => {
 };
 
 export const Route = createFileRoute('/admin/dashboard')({
+  beforeLoad: () => {
+    const role = localStorage.getItem('role');
+    if (role !== 'admin') {
+      throw redirect({ to: '/' });
+    }
+  },
   component: AdminDashboardPage,
 });

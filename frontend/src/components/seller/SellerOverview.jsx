@@ -121,7 +121,7 @@ const SellerOverview = () => {
             </button>
           </div>
           <div className="h-[200px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%">
               <AreaChart data={orderData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="orderGradLight" x1="0" y1="0" x2="0" y2="1">
@@ -169,7 +169,7 @@ const SellerOverview = () => {
             </div>
           </div>
           <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%">
                <LineChart data={revenueData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#888' }} dy={10} />
                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#888' }} dx={-10} tickFormatter={(val) => `$${val/1000}k`} />
@@ -197,7 +197,7 @@ const SellerOverview = () => {
             </div>
           </div>
           <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%">
                <BarChart data={customerData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#888' }} dx={-10} />
                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#888' }} dy={10} />
