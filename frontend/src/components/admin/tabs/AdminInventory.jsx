@@ -137,7 +137,7 @@ const AdminInventory = ({
         onClose={() => { setIsAddProductModalOpen(false); setEditingProduct(null); }}
         title={editingProduct ? "Refine Fragrance" : "New Olfactory Creation"}
       >
-        <form className="space-y-6" onSubmit={(e) => {
+        <form key={editingProduct?._id || 'new-product'} className="space-y-6" onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.target);
           const data = Object.fromEntries(formData.entries());
@@ -185,7 +185,7 @@ const AdminInventory = ({
         onClose={() => { setIsAddCategoryModalOpen(false); setEditingCategory(null); }}
         title={editingCategory ? "Refine Scent Library" : "Expand Scent Library"}
       >
-        <form className="space-y-6" onSubmit={(e) => {
+        <form key={editingCategory?._id || 'new-category'} className="space-y-6" onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.target);
           const name = formData.get('name');

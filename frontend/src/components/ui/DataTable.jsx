@@ -38,29 +38,31 @@ export function DataTable({
 
   return (
     <div className={cn("w-full space-y-4", className)}>
-      <div className="flex items-center justify-between gap-4">
-        <input
-          placeholder="Search all columns..."
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm px-4 py-2 border rounded-md text-sm bg-background border-input"
-        />
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative w-full max-w-sm group">
+          <input
+            placeholder="Filter archive..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="w-full pl-4 pr-4 py-2.5 glass-panel rounded-xl text-[11px] font-bold uppercase tracking-wider outline-none focus:border-[var(--admin-accent)]/40 text-[var(--admin-text-primary)] placeholder:text-[var(--admin-text-secondary)]/50"
+          />
+        </div>
+        <div className="flex items-center gap-4">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+            className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest glass-panel rounded-xl disabled:opacity-20 hover:text-[var(--admin-accent)] transition-all"
           >
             Previous
           </button>
-          <span className="text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-text-secondary)]">
+            Stage <span className="text-[var(--admin-text-primary)]">{table.getState().pagination.pageIndex + 1}</span> of{" "}
+            <span className="text-[var(--admin-text-primary)]">{table.getPageCount()}</span>
           </span>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+            className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest glass-panel rounded-xl disabled:opacity-20 hover:text-[var(--admin-accent)] transition-all"
           >
             Next
           </button>

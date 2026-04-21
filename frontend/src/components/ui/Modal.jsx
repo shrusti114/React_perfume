@@ -52,20 +52,20 @@ export function Modal({
       <div 
         ref={modalRef}
         className={cn(
-          "relative w-full bg-background rounded-3xl shadow-2xl border flex flex-col max-h-[90vh] overflow-hidden",
-          "animate-in zoom-in-95 duration-200",
+          "relative w-full bg-[var(--admin-panel)] rounded-[2.5rem] shadow-2xl border border-[var(--admin-panel-border)] flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-500",
+          "animate-in zoom-in-95 duration-300",
           maxWidth,
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-serif font-bold text-foreground">
+        <div className="flex items-center justify-between p-8 border-b border-[var(--admin-panel-border)]">
+          <h2 className="text-xl font-serif font-bold text-[var(--admin-text-primary)]">
             {title}
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors"
+            className="p-2.5 rounded-xl hover:bg-[var(--admin-text-primary)]/[0.05] text-[var(--admin-text-secondary)] hover:text-[var(--admin-accent)] transition-all"
           >
             <X size={20} />
           </button>

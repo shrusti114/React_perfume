@@ -27,16 +27,34 @@
     --admin-text-secondary: #6c757d;
     --admin-accent: #22D3EE;
     --admin-glass: rgba(255, 255, 255, 0.9);
+
+    /* Standard mappings for Shadcn/Tailwind utilities */
+    --background: var(--admin-bg);
+    --foreground: var(--admin-text-primary);
+    --muted: #f1f5f9;
+    --muted-foreground: var(--admin-text-secondary);
+    --border: var(--admin-panel-border);
+    --input: var(--admin-panel-border);
+    --ring: var(--admin-accent);
   }
 
   .dark {
     --admin-bg: #050505;
     --admin-panel: #111111;
-    --admin-panel-border: rgba(255, 255, 255, 0.05);
+    --admin-panel-border: rgba(255, 255, 255, 0.08);
     --admin-text-primary: #ffffff;
     --admin-text-secondary: #9ca3af;
     --admin-accent: #22D3EE;
     --admin-glass: rgba(10, 10, 10, 0.7);
+
+    /* Standard mappings for Shadcn/Tailwind utilities */
+    --background: var(--admin-bg);
+    --foreground: var(--admin-text-primary);
+    --muted: #1e293b;
+    --muted-foreground: var(--admin-text-secondary);
+    --border: var(--admin-panel-border);
+    --input: var(--admin-panel-border);
+    --ring: var(--admin-accent);
   }
 
   body {
