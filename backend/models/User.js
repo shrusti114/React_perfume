@@ -23,6 +23,6 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   wishlist: [{ type: String, ref: 'Product' }],
   status: { type: String, enum: ['active', 'inactive', 'suspended', 'pending'], default: 'active' },
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }, collection: 'users' });
 
 module.exports = mongoose.model('User', userSchema);

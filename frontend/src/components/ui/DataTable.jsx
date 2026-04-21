@@ -67,9 +67,9 @@ export function DataTable({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md overflow-hidden shadow-2xl">
+      <div className="rounded-2xl border border-[var(--admin-panel-border)] bg-[var(--admin-panel)] backdrop-blur-md overflow-hidden shadow-2xl transition-colors duration-500">
         <table className="w-full text-sm text-left">
-          <thead className="bg-white/5 border-b border-white/10 uppercase text-[10px] font-bold tracking-[0.2em] text-neutral-500">
+          <thead className="bg-[var(--admin-text-primary)]/[0.03] border-b border-[var(--admin-panel-border)] uppercase text-[10px] font-bold tracking-[0.2em] text-[var(--admin-text-secondary)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -85,16 +85,16 @@ export function DataTable({
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-[var(--admin-panel-border)]">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-white/5 transition-all cursor-pointer group"
+                  className="hover:bg-[var(--admin-accent)]/[0.03] transition-all cursor-pointer group"
                   onClick={() => onRowClick?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4 text-neutral-300 group-hover:text-white transition-colors">
+                    <td key={cell.id} className="px-6 py-4 text-[var(--admin-text-primary)] opacity-80 group-hover:opacity-100 transition-all">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -102,7 +102,7 @@ export function DataTable({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="h-24 text-center text-neutral-500 italic">
+                <td colSpan={columns.length} className="h-24 text-center text-[var(--admin-text-secondary)] italic">
                   No records found in the vault.
                 </td>
               </tr>

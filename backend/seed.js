@@ -119,9 +119,9 @@ const seedDatabase = async () => {
     await Order.insertMany([
       { _id: 'O001', userId: 'U001', products: [{ productId: 'P001', quantity: 1 }, { productId: 'P010', quantity: 1 }], totalAmount: 340, status: 'Delivered' },
       { _id: 'O002', userId: 'U001', products: [{ productId: 'P005', quantity: 1 }], totalAmount: 350, status: 'Shipped' },
-      { _id: 'O003', userId: 'U002', products: [{ productId: 'P011', quantity: 2 }], totalAmount: 290, status: 'Confirmed' },
+      { _id: 'O003', userId: 'U002', products: [{ productId: 'P011', quantity: 2 }], totalAmount: 290, status: 'Processing' },
       { _id: 'O004', userId: 'U002', products: [{ productId: 'P021', quantity: 1 }, { productId: 'P007', quantity: 1 }], totalAmount: 720, status: 'Delivered' },
-      { _id: 'O005', userId: 'U003', products: [{ productId: 'P014', quantity: 1 }], totalAmount: 445, status: 'Pending' },
+      { _id: 'O005', userId: 'U003', products: [{ productId: 'P014', quantity: 1 }], totalAmount: 445, status: 'Processing' },
     ]);
     console.log('5 Orders seeded.');
 

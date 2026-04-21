@@ -19,20 +19,51 @@
 }
 
 @layer base {
-  body {
-    background-color: #050505;
-    color: #ffffff;
-    font-family: 'Outfit', sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  :root {
+    --admin-bg: #f8f9fa;
+    --admin-panel: #ffffff;
+    --admin-panel-border: rgba(0, 0, 0, 0.05);
+    --admin-text-primary: #1a1a1a;
+    --admin-text-secondary: #6c757d;
+    --admin-accent: #22D3EE;
+    --admin-glass: rgba(255, 255, 255, 0.9);
   }
 
-  .dark body {
-    background-color: #0a0a0a;
-    color: #ffffff;
+  .dark {
+    --admin-bg: #050505;
+    --admin-panel: #111111;
+    --admin-panel-border: rgba(255, 255, 255, 0.05);
+    --admin-text-primary: #ffffff;
+    --admin-text-secondary: #9ca3af;
+    --admin-accent: #22D3EE;
+    --admin-glass: rgba(10, 10, 10, 0.7);
+  }
+
+  body {
+    background-color: var(--admin-bg);
+    color: var(--admin-text-primary);
+    font-family: 'Outfit', sans-serif;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-elegant);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply backdrop-blur-xl border border-[var(--admin-panel-border)] bg-[var(--admin-glass)];
+    transition: all 0.3s ease;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-xl border border-[var(--admin-panel-border)] bg-[var(--admin-glass)] rounded-[2.5rem] p-8 shadow-2xl;
+    transition: all 0.3s ease;
+  }
+
+  .admin-table-row {
+    @apply border-b border-[var(--admin-panel-border)] hover:bg-white/[0.02] dark:hover:bg-white/[0.01] transition-colors;
   }
 }
 
@@ -42,21 +73,16 @@
 
 /* Custom Scrollbar for Luxury Feel */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #fafafa;
-}
-.dark ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--admin-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #FFD1DC;
-  border-radius: 4px;
+  background: var(--admin-accent);
+  opacity: 0.3;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #000000;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #ffffff;
+  background: var(--admin-accent);
 }

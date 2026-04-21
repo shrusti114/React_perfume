@@ -150,8 +150,8 @@ exports.approveSeller = async (req, res) => {
 exports.getAllFeedback = async (req, res) => {
   try {
     const feedback = await Feedback.find()
-      .populate('userId', 'name email')
-      .populate('productId', 'name')
+      .populate('user_id', 'name email')
+      .populate('product_id', 'name')
       .sort({ created_at: -1 });
     res.json(feedback);
   } catch (error) {

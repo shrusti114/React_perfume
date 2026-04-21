@@ -8,11 +8,9 @@ export function OrderTrackingHUD({ order }) {
   if (!order) return null;
 
   const getStatusLabel = (status) => {
-    if (status === 'Delivered') return 'Arrived';
-    if (status === 'Shipped') return 'In Transit';
-    if (status === 'Confirmed') return 'Order Confirmed';
-    if (status === 'Pending') return 'Processing';
-    return 'Processing'; // Default for initial state
+    if (status === 'Delivered') return 'Delivered';
+    if (status === 'Shipped') return 'Shipped';
+    return 'Processing';
   };
 
   return (
@@ -57,12 +55,12 @@ export function OrderTrackingHUD({ order }) {
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-32">
           {[
-            { id: 'Pending', title: 'Processing', desc: 'Crafting & packaging your chosen essence within the Velvora secure vault.' },
-            { id: 'Shipped', title: 'In Transit', desc: 'Your singular fragrance is being whisked across the country for final dispatch.' },
-            { id: 'Delivered', title: 'Arrived', desc: 'A signature of sheer excellence has reached its final destination coordinates.' }
+            { id: 'Processing', title: 'PROCESSING', desc: 'Crafting & packaging your chosen essence within the Velvora secure vault.' },
+            { id: 'Shipped', title: 'SHIPPED', desc: 'Your singular fragrance is being whisked across the country for final dispatch.' },
+            { id: 'Delivered', title: 'DELIVERED', desc: 'A signature of sheer excellence has reached its final destination coordinates.' }
           ].map((item, i) => {
             const isActive = order.status === item.id || 
-              (item.id === 'Pending' && ['Pending', 'Confirmed'].includes(order.status)) ||
+              (item.id === 'Processing' && order.status === 'Processing') ||
               (item.id === 'Shipped' && order.status === 'Shipped') ||
               (item.id === 'Delivered' && order.status === 'Delivered');
 
